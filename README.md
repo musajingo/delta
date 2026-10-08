@@ -38,6 +38,41 @@ patch-field = { version = "0.1", default-features = false }
 
 Disable default features only if you do not need serde support.
 
+## OpenAPI with utoipa
+
+Enable the optional `utoipa` feature to implement utoipa 5's `PartialSchema`
+and `ToSchema` traits for `PatchField<T>`:
+
+```toml
+[dependencies]
+patch-field = { version = "0.1", features = ["utoipa"] }
+serde = { version = "1", features = ["derive"] }
+utoipa = "5.5"
+```
+
+<!-- Not a doctest: it needs the non-default `utoipa` feature.
+     tests/utoipa.rs compiles and runs this exact example. -->
+```rust,ignore
+use patch_field::PatchField;
+use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
+
+#[derive(Serialize, Deserialize, ToSchema)]
+struct UpdateUser {
+    #[serde(default, skip_serializing_if = "PatchField::is_absent")]
+    nickname: PatchField<String>,
+}
+```
+
+The generated schema accepts `T` or `null`. Utoipa recognizes `serde(default)`
+and makes the property optional, representing `Absent`. Keep
+`skip_serializing_if` to omit absent fields during serialization. No
+`#[schema(value_type = ...)]` override is needed. Without these attributes,
+utoipa treats the property as required, even though it accepts `null`.
+
+The `utoipa` feature is independent of `serde` and brings in utoipa's `std`
+dependency. With it disabled, PatchField remains `no_std`.
+
 ## Serde Usage
 
 Always put `#[serde(default)]` on struct fields that use `PatchField<T>`:

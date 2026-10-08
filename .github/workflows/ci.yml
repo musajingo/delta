@@ -32,11 +32,13 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
-      # Check the crate without defaults and with each supported feature.
+      # Build and run tests for every feature combination. --all-targets
+      # covers unit and integration tests but not doctests; the README
+      # doctests need default features and already run in the test job.
       - run: |
-          for features in "" "serde"; do
+          for features in "" "serde" "utoipa" "serde,utoipa"; do
             echo "::group::features=[$features]"
-            cargo check --no-default-features --features "$features"
+            cargo test --no-default-features --features "$features" --all-targets
             echo "::endgroup::"
           done
 
