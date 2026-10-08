@@ -1,13 +1,14 @@
 [package]
-name = "patch-field"
+name = "delta"
 version = "0.1.0"
+publish = false
 edition = "2024"
 rust-version = "1.94"
-description = "Three-state PATCH field type; absent, null, or a value."
+description = "Describes a change to a field: leave it unchanged, clear it, or set a value."
 authors = ["Musa Mahmoud Jingo <dev.musajingo@pm.me>"]
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/musamahmoudjingo/patch-field"
-keywords = ["patch", "nullable"]
+repository = "https://github.com/musamahmoudjingo/delta"
+keywords = ["patch", "delta", "nullable"]
 categories = ["encoding"]
 
 [dependencies]

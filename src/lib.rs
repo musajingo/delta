@@ -4,7 +4,7 @@
 #[cfg(feature = "utoipa")]
 extern crate alloc;
 
-mod patch_field;
+mod delta;
 
 #[cfg(feature = "serde")]
 mod serde;
@@ -12,4 +12,4 @@ mod serde;
 #[cfg(feature = "utoipa")]
 mod utoipa;
 
-pub use patch_field::PatchField;
+pub use delta::Delta;

@@ -4,7 +4,7 @@ use utoipa::{
     openapi::{RefOr, schema::Schema},
 };
 
-use crate::PatchField;
+use crate::Delta;
 
 // Type names utoipa always in-lines instead of registering as components.
 // We don't register these as named schemas, it would add junk entries like
@@ -31,10 +31,10 @@ const INLINED_PRIMITIVES: &[&str] = &[
     "TupleUnit",
 ];
 
-// #[derive(ToSchema)] calls this for generic field types like `PatchField<T>`,
+// #[derive(ToSchema)] calls this for generic field types like `Delta<T>`,
 // handing us T's schema. `__dev` is internal API, but it is the only hook
 // utoipa offers.
-impl<T: PartialSchema> utoipa::__dev::ComposeSchema for PatchField<T> {
+impl<T: PartialSchema> utoipa::__dev::ComposeSchema for Delta<T> {
     fn compose(mut schemas: Vec<RefOr<Schema>>) -> RefOr<Schema> {
         utoipa::openapi::schema::AnyOfBuilder::new()
             .item(if schemas.is_empty() {
@@ -53,10 +53,10 @@ impl<T: PartialSchema> utoipa::__dev::ComposeSchema for PatchField<T> {
     }
 }
 
-impl<T: ToSchema> ToSchema for PatchField<T> {
-    // Utoipa adds the `_T` suffix itself: this becomes `PatchField_String`.
+impl<T: ToSchema> ToSchema for Delta<T> {
+    // Utoipa adds the `_T` suffix itself: this becomes `Delta_String`.
     fn name() -> Cow<'static, str> {
-        Cow::Borrowed("PatchField")
+        Cow::Borrowed("Delta")
     }
 
     fn schemas(schemas: &mut Vec<(String, RefOr<Schema>)>) {
