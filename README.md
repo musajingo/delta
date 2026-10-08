@@ -26,7 +26,7 @@ Plain `Option<T>` can represent `null` or a value, but not an omitted field.
 
 ```toml
 [dependencies]
-delta = { git = "https://github.com/musamahmoudjingo/delta" }
+delta = { git = "https://github.com/musajingo/delta" }
 ```
 
 The crate is `no_std`. The optional `utoipa` and `sqlx` features link `std`
@@ -34,7 +34,7 @@ through their dependencies. The `serde` feature is enabled by default.
 
 ```toml
 [dependencies]
-delta = { git = "https://github.com/musamahmoudjingo/delta", default-features = false }
+delta = { git = "https://github.com/musajingo/delta", default-features = false }
 ```
 
 Disable default features only if you do not need serde support.
@@ -137,7 +137,7 @@ types:
 
 ```toml
 [dependencies]
-delta = { git = "https://github.com/musamahmoudjingo/delta", features = ["utoipa"] }
+delta = { git = "https://github.com/musajingo/delta", features = ["utoipa"] }
 ```
 
 <!-- Not a doctest: needs the non-default `utoipa` feature. Covered by tests/utoipa.rs. -->
@@ -165,7 +165,7 @@ Enable the optional `sqlx` feature to bind `Delta<T>` directly with sqlx 0.9.
 
 ```toml
 [dependencies]
-delta = { git = "https://github.com/musamahmoudjingo/delta", features = ["sqlx"] }
+delta = { git = "https://github.com/musajingo/delta", features = ["sqlx"] }
 ```
 
 `Set(value)` binds the value. `Clear` binds SQL `NULL`. `Unchanged` fails

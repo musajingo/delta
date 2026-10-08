@@ -7,7 +7,7 @@ rust-version = "1.94"
 description = "Describes a change to a field: leave it unchanged, clear it, or set a value."
 authors = ["Musa Mahmoud Jingo <dev.musajingo@pm.me>"]
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/musamahmoudjingo/delta"
+repository = "https://github.com/musajingo/delta"
 keywords = ["patch", "delta", "nullable"]
 categories = ["encoding"]
 
