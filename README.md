@@ -29,7 +29,8 @@ Plain `Option<T>` can represent `null` or a value, but not an omitted field.
 delta = { git = "https://github.com/musamahmoudjingo/delta" }
 ```
 
-The crate is `no_std`. The `serde` feature is enabled by default:
+The crate is `no_std`. The optional `utoipa` and `sqlx` features link `std`
+through their dependencies. The `serde` feature is enabled by default.
 
 ```toml
 [dependencies]
@@ -156,4 +157,105 @@ struct UpdateUser {
     #[serde(default)]
     nickname: Delta<String>,
 }
+```
+
+## Database updates
+
+Enable the optional `sqlx` feature to bind `Delta<T>` directly with sqlx 0.9.
+
+```toml
+[dependencies]
+delta = { git = "https://github.com/musamahmoudjingo/delta", features = ["sqlx"] }
+```
+
+`Set(value)` binds the value. `Clear` binds SQL `NULL`. `Unchanged` fails
+with `UnchangedDeltaError` instead of silently clearing the column, so use
+`is_changed()` to decide which columns to update.
+
+<!-- Not a doctest: needs the non-default sqlx feature and an application runtime. -->
+
+```rust,ignore
+use delta::Delta;
+use sqlx::PgPool;
+
+async fn update_nickname(
+    pool: &PgPool,
+    user_id: i64,
+    nickname: &Delta<String>,
+) -> Result<(), sqlx::Error> {
+    if nickname.is_changed() {
+        sqlx::query("UPDATE users SET nickname = $1 WHERE id = $2")
+            .bind(nickname)
+            .bind(user_id)
+            .execute(pool)
+            .await?;
+    }
+    Ok(())
+}
+```
+
+### Without the sqlx feature
+
+Bind `is_changed()` and `value()` as a pair in a fixed query. The `CASE
+WHEN` keeps the stored value when the field is unchanged.
+
+<!-- Not a doctest: sqlx is an application dependency. -->
+
+```rust,ignore
+use delta::Delta;
+use sqlx::PgPool;
+
+async fn update_nickname(
+    pool: &PgPool,
+    user_id: i64,
+    nickname: &Delta<String>,
+) -> Result<(), sqlx::Error> {
+    sqlx::query(
+        "UPDATE users
+         SET nickname = CASE WHEN $1 THEN $2 ELSE nickname END
+         WHERE id = $3",
+    )
+    .bind(nickname.is_changed())
+    .bind(nickname.value())
+    .bind(user_id)
+    .execute(pool)
+    .await?;
+
+    Ok(())
+}
+```
+
+Or skip the query entirely when the field is unchanged. Inside the
+`is_changed()` check, `value()` binds the new value for `Set` and `NULL`
+for `Clear`.
+
+```rust,ignore
+use delta::Delta;
+use sqlx::PgPool;
+
+async fn update_nickname(
+    pool: &PgPool,
+    user_id: i64,
+    nickname: &Delta<String>,
+) -> Result<(), sqlx::Error> {
+    if nickname.is_changed() {
+        sqlx::query("UPDATE users SET nickname = $1 WHERE id = $2")
+            .bind(nickname.value())
+            .bind(user_id)
+            .execute(pool)
+            .await?;
+    }
+    Ok(())
+}
+```
+
+> **Warning.** Never bind `value()` on its own. It returns `None` for both
+> `Unchanged` and `Clear`, so the query would write `NULL` and clear fields
+> the request never mentioned.
+
+```rust,ignore
+// Wrong. Unchanged becomes NULL and clears the column.
+sqlx::query("UPDATE users SET nickname = $1 WHERE id = $2")
+    .bind(nickname.value())
+    .bind(user_id)
 ```

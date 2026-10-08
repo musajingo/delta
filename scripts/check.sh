@@ -31,7 +31,7 @@ run cargo +stable clippy --all-features --all-targets -- -D warnings
 run cargo +stable test --all-features
 run env RUSTDOCFLAGS="-D warnings" cargo +stable doc --all-features --no-deps
 
-for features in "" "serde" "utoipa" "serde,utoipa"; do
+for features in "" "serde" "utoipa" "sqlx"; do
   run cargo +stable test --no-default-features ${features:+--features "$features"} --all-targets
 done
 

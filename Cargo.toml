@@ -14,12 +14,16 @@ categories = ["encoding"]
 [dependencies]
 serde = { version = "1.0.229", optional = true, default-features = false}
 utoipa = { version = "5.5", optional = true }
+sqlx = { version = "0.9", optional = true, default-features = false }
 
 [dev-dependencies]
 serde = { version = "1.0.229", features = ["derive", "std"] }
 serde_json = "1.0.151"
+sqlx = { version = "0.9", default-features = false, features = ["postgres", "sqlite", "runtime-tokio"] }
+tokio = { version = "1", features = ["macros", "rt"] }
 
 [features]
 default = ["serde"]
 serde = ["dep:serde"]
 utoipa = ["dep:utoipa"]
+sqlx = ["dep:sqlx"]

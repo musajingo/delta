@@ -36,7 +36,7 @@ jobs:
       # covers unit and integration tests but not doctests; the README
       # doctests need default features and already run in the test job.
       - run: |
-          for features in "" "serde" "utoipa" "serde,utoipa"; do
+          for features in "" "serde" "utoipa" "sqlx"; do
             echo "::group::features=[$features]"
             cargo test --no-default-features --features "$features" --all-targets
             echo "::endgroup::"
