@@ -7,6 +7,7 @@ description = "Describes a change to a field: leave it unchanged, clear it, or s
 authors = ["Musa Mahmoud Jingo <dev.musajingo@pm.me>"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/musajingo/field-delta"
+documentation = "https://docs.rs/field-delta"
 keywords = ["patch", "delta", "nullable"]
 categories = ["encoding"]
 
