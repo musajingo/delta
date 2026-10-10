@@ -1,4 +1,4 @@
-# Delta
+# field-delta
 
 `Delta<T>` describes a change to a field: leave it unchanged, clear it, or
 set a value.
@@ -26,7 +26,7 @@ Plain `Option<T>` can represent `null` or a value, but not an omitted field.
 
 ```toml
 [dependencies]
-delta = { git = "https://github.com/musajingo/delta" }
+field-delta = { version = "0.1" }
 ```
 
 The crate is `no_std`. The optional `utoipa` and `sqlx` features link `std`
@@ -34,7 +34,7 @@ through their dependencies. The `serde` feature is enabled by default.
 
 ```toml
 [dependencies]
-delta = { git = "https://github.com/musajingo/delta", default-features = false }
+field-delta = { version = "0.1", default-features = false }
 ```
 
 Disable default features only if you do not need serde support.
@@ -44,7 +44,7 @@ Disable default features only if you do not need serde support.
 Always put `#[serde(default)]` on struct fields that use `Delta<T>`:
 
 ```rust
-use delta::Delta;
+use field_delta::Delta;
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
@@ -57,7 +57,7 @@ struct UpdateUser {
 With `#[serde(default)]`, omitted fields become `Delta::Unchanged`:
 
 ```rust
-use delta::Delta;
+use field_delta::Delta;
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
@@ -81,7 +81,7 @@ This fail-loud behavior prevents an omitted field from accidentally being
 treated as explicit `null`, which often means "clear this database column."
 
 ```rust
-use delta::Delta;
+use field_delta::Delta;
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
@@ -99,7 +99,7 @@ JSON has no standalone value for an omitted field, so serializing a bare
 `Delta::Unchanged` produces `null`, the same as `Delta::Clear`:
 
 ```rust
-use delta::Delta;
+use field_delta::Delta;
 
 assert_eq!(serde_json::to_string(&Delta::Set("hi")).unwrap(), r#""hi""#);
 assert_eq!(serde_json::to_string(&Delta::<String>::Clear).unwrap(), "null");
@@ -110,7 +110,7 @@ When serializing a struct, use `skip_serializing_if` to omit unchanged fields
 while keeping explicit `null` values:
 
 ```rust
-use delta::Delta;
+use field_delta::Delta;
 use serde::Serialize;
 
 #[derive(Serialize)]
@@ -137,13 +137,13 @@ types:
 
 ```toml
 [dependencies]
-delta = { git = "https://github.com/musajingo/delta", features = ["utoipa"] }
+field-delta = { version = "0.1", features = ["utoipa"] }
 ```
 
 <!-- Not a doctest: needs the non-default `utoipa` feature. Covered by tests/utoipa.rs. -->
 
 ```rust,ignore
-use delta::Delta;
+use field_delta::Delta;
 use serde::Deserialize;
 use utoipa::ToSchema;
 
@@ -165,7 +165,7 @@ Enable the optional `sqlx` feature to bind `Delta<T>` directly with sqlx 0.9.
 
 ```toml
 [dependencies]
-delta = { git = "https://github.com/musajingo/delta", features = ["sqlx"] }
+field-delta = { version = "0.1", features = ["sqlx"] }
 ```
 
 `Set(value)` binds the value. `Clear` binds SQL `NULL`. `Unchanged` fails
@@ -175,7 +175,7 @@ with `UnchangedDeltaError` instead of silently clearing the column, so use
 <!-- Not a doctest: needs the non-default sqlx feature and an application runtime. -->
 
 ```rust,ignore
-use delta::Delta;
+use field_delta::Delta;
 use sqlx::PgPool;
 
 async fn update_nickname(
@@ -202,7 +202,7 @@ WHEN` keeps the stored value when the field is unchanged.
 <!-- Not a doctest: sqlx is an application dependency. -->
 
 ```rust,ignore
-use delta::Delta;
+use field_delta::Delta;
 use sqlx::PgPool;
 
 async fn update_nickname(
@@ -230,7 +230,7 @@ Or skip the query entirely when the field is unchanged. Inside the
 for `Clear`.
 
 ```rust,ignore
-use delta::Delta;
+use field_delta::Delta;
 use sqlx::PgPool;
 
 async fn update_nickname(

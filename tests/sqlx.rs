@@ -1,6 +1,6 @@
 #![cfg(feature = "sqlx")]
 
-use delta::{Delta, UnchangedDeltaError};
+use field_delta::{Delta, UnchangedDeltaError};
 use sqlx::{Connection, Encode, Postgres, SqliteConnection, Type, postgres::PgArgumentBuffer};
 
 #[test]

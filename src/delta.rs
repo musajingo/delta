@@ -20,7 +20,7 @@
 /// is omitted.
 ///
 /// ```rust
-/// use delta::Delta;
+/// use field_delta::Delta;
 /// use serde::Deserialize;
 ///
 /// #[derive(Deserialize)]
@@ -43,7 +43,7 @@
 /// fields:
 ///
 /// ```rust
-/// use delta::Delta;
+/// use field_delta::Delta;
 /// use serde::Serialize;
 ///
 /// #[derive(Serialize)]
@@ -56,7 +56,7 @@
 /// ## Example
 ///
 /// ```rust
-/// use delta::Delta;
+/// use field_delta::Delta;
 /// use serde::Deserialize;
 ///
 /// #[derive(Deserialize)]

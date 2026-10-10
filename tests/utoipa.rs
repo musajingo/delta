@@ -1,6 +1,6 @@
 #![cfg(feature = "utoipa")]
 
-use delta::Delta;
+use field_delta::Delta;
 use serde_json::json;
 use utoipa::{OpenApi, PartialSchema, ToSchema};
 
